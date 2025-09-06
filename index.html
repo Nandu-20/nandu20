@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Login Page</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: url("mam.jpg") center center;
+      background-size: contain;        
+      background-repeat:repeat;  
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .message {
+      position: relative;
+      max-width: 80%;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      color:pink;
+      
+    }
+
+    .box {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      width: 350px;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+      z-index: 2;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      width: 95%;
+      padding: 12px;
+      background: pink;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.3s, background 0.3s;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background:black;
+      transform: scale(1.05);
+    }
+
+    .hidden { display: none; }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(-20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    @keyframes confetti {
+      0% { transform: translateY(-100vh) rotate(0deg); opacity: 1;}
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0;}
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      top: -10px;
+      animation: confetti 4s linear forwards;
+      z-index: 1;
+    }
+
+    /* Floating balloons */
+    .balloon {
+      position: absolute;
+      bottom: -150px;
+      width: 50px;
+      height: 70px;
+      border-radius: 50%;
+      animation: floatUp 10s forwards ease-in;
+      z-index: 1;
+    }
+
+    .balloon::after {
+      content: "";
+      position: absolute;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 60px;
+      background: repeating-linear-gradient(
+        45deg, black 0 2px, transparent 2px 4px
+      );
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 1;}
+      100% { transform: translateY(-120vh) scale(1.2); opacity: 0;}
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Box -->
+  <div class="box" id="loginBox">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Enter Username" required>
+    <input type="password" id="password" placeholder="Enter Password" required>
+    <button onclick="login()">Login</button>
+  </div>
+
+  <!-- After Login -->
+  <div class="box hidden" id="afterLogin">
+    <h2>Happy Birthday🎉</h2>
+    <button onclick="showMessage()">Click it</button>
+  </div>
+
+  <!-- Birthday Song -->
+  <audio id="bgSong" loop>
+    <source src="hit3.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Birthday Message -->
+  <div class="message hidden" id="birthdayMessage"></div>
+
+  <script>
+    
+function login() {
+  const user = document.getElementById("username").value.trim();
+  const pass = document.getElementById("password").value.trim();
+
+  if (user === "Himaja" && pass === "HimajaRaviKumar") {
+    document.getElementById("loginBox").classList.add("hidden");
+    document.getElementById("afterLogin").classList.remove("hidden");
+
+    document.body.style.backgroundImage = "url('brdy.jpg')";
+    document.body.style.backgroundSize = "contain";
+    document.body.style.backgroundRepeat = "repeat";
+
+       document.getElementById("bgSong").play().catch(()=>{});
+  } else {
+    alert("Invalid username or password! Try again.");
+  }
+}
+
+    function showMessage() {
+      document.getElementById("afterLogin").classList.add("hidden");
+      document.getElementById("birthdayMessage").classList.remove("hidden");
+
+      typeMessage();
+      launchConfetti();
+      launchBalloons();
+
+      // ✅ Play song if blocked earlier
+      document.getElementById("bgSong").play();
+    }
+
+    function typeMessage() {
+      const messageBox = document.getElementById("birthdayMessage");
+      const text = "Happy Birthday! Wishing you lots of joy, success, and happiness ahead. May this year also give more happiness than last with your loved ones. Thank you for those moments that you gave to me, thank you for being my wellwisher, and thank you for supporting me in any situation. No matter where life keeps us I want this bond with you lifelong. You made me realize that it's better to have a sister in everyone's life and you filled the gap of not having one in my life. I really felt you as my own sister. I know you receive many wishes but maybe this wish makes you feel a little more special on your special day. ONCE AGAIN HAPPY BIRTHDAY MAM 🎂🎉";
+
+      let i = 0;
+      messageBox.innerHTML = "";
+
+      function typeWriter() {
+        if (i < text.length) {
+          messageBox.innerHTML += text.charAt(i);
+          i++;
+          setTimeout(typeWriter, 60);
+        }
+      }
+      typeWriter();
+    }
+
+    function launchConfetti() {
+      setInterval(() => {
+        let confetti = document.createElement("div");
+        confetti.classList.add("confetti");
+        confetti.style.left = Math.random() * window.innerWidth + "px";
+        confetti.style.backgroundColor = randomColor();
+        confetti.style.animationDuration = (Math.random() * 3 + 2) + "s";
+        document.body.appendChild(confetti);
+
+s        // ✅ remove after animation
+        setTimeout(() => confetti.remove(), 5000);
+      }, 200);
+    }
+
+    function launchBalloons() {
+      setInterval(() => {
+        let balloon = document.createElement("div");
+        balloon.classList.add("balloon");
+        balloon.style.left = Math.random() * window.innerWidth + "px";
+        balloon.style.backgroundColor = randomColor();
+        balloon.style.animationDuration = (Math.random() * 6 + 5) + "s";
+        document.body.appendChild(balloon);
+
+        // ✅ remove after animation
+        setTimeout(() => balloon.remove(), 12000);
+      }, 2000);
+    }
+
+    function randomColor() {
+      const colors = ["#ff4d4d", "#ffcc00", "#33cc33", "#3399ff", "#ff66cc"];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+// Pause music if tab is hidden, play again if user comes back
+document.addEventListener("visibilitychange", function() {
+  const song = document.getElementById("bgSong");
+  if (document.hidden) {
+    song.pause();   // pause if tab is hidden
+  } else {
+    song.play().catch(()=>{});  // resume if tab is visible
+  }
+});
+
+  </script>
+</body>
+</html>
